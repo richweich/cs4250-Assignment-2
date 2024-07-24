@@ -13,6 +13,7 @@
 # --> add your Python code here
 from pymongo import MongoClient
 import datetime
+import string
 
 def connectDataBase():
 
@@ -41,6 +42,7 @@ def createDocument(col, docId, docText, docTitle, docDate, docCat):
     terms = docText.lower().split()
     term_counts = {}
     for term in terms:
+        term = term.translate(str.maketrans('','', string.punctuation))
         if term in term_counts:
             term_counts[term] += 1
         else:
@@ -72,7 +74,7 @@ def deleteDocument(col, docId):
     # Delete the document from the database
     # --> add your Python code here
     
-    col.delete_one({"_id": docId})
+    col.delete_one({"id": docId})
 
 def updateDocument(col, docId, docText, docTitle, docDate, docCat):
 
@@ -100,4 +102,5 @@ def getIndex(col):
                 index[term_name] += f", {term_info}"
             else:
                 index[term_name] = term_info
-    return index
+    sorted_index = dict(sorted(index.items()))
+    return sorted_index
